@@ -6,6 +6,10 @@ Japanese/ [English](README.md)
 
 分子動力学法において調和振動子にNose-Hoover熱浴をつけるとエルゴード性を失い、カノニカル分布にならないことが知られている。それを解決する手段として、Kinetic-Moments法、Nose-Hoover-Chain法などの多変数熱浴や、Langevin法などの確率的熱浴をつける方法が知られている。そのサンプルコード。
 
+Qiitaに解説を書いたので、そちらも参照のこと。
+
+* [調和振動子に作用させた熱浴のエルゴード性](http://qiita.com/kaityo256/items/2b14d7093c43eb5f77d7) @ [Qiita](http://qiita.com/)
+
 ## 熱浴法
 
 * Nose-Hoover (NH)
