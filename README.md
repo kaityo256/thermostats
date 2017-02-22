@@ -33,15 +33,19 @@ $ gnuplot plot.plt
 You can see that the system with Nose-Hoover doses not achieve the canonical distribution while the systems with other thermostats does.
 
 * Phase Space of the Nose-Hoover method
+
 ![nose_hoover_ps.png](nose_hoover_ps.png)
 
 * Phase Space of the Langevin method
+
 ![langevin_ps.png](langevin_ps.png)
 
 * Phase space of the Kinetic-Moments method
+
 ![kinetic_moments_ps.png ](kinetic_moments_ps.png )
 
 * Phase space of the Nose-Hoover-Chain method.
+
 ![nose_hoover_chain_ps.png](nose_hoover_chain_ps.png)
 
 ## References

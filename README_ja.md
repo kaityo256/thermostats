@@ -33,15 +33,19 @@ $ gnuplot plot.plt
 エネルギーEに関する累積分布関数P(E)は、逆温度をβとして1 - exp(-βE)となるはず。したがって、P(E)をexp(-βE)に関してプロットすると、カノニカル分布が実現していれば(1,0)と(0,1)をつなぐ直線になる。上のグラフはβ=1の場合に様々な熱浴においてP(E)をプロットしたもの。Langevin、KM、NHCでは直線に乗っており、指定温度のカノニカル分布が実現していることがわかるが、Nose-Hooverだけカノニカル分布からずれている。
 
 * Npse-Hoover法の場合の位相空間。本来なら原点に近いほど密に、離れるほど疎に位相空間を埋め尽くさなければならないが、明らかにエネルギーに上限と下限がある。
+
 ![nose_hoover_ps.png](nose_hoover_ps.png)
 
 * Langevin法の場合。原点に近いほど密に、離れるほど疎に位相空間を埋め尽くしており、正しく温度が制御されていることがわかる。
+
 ![langevin_ps.png](langevin_ps.png)
 
 * Kinetic-Moments法も同様。
+
 ![kinetic_moments_ps.png ](kinetic_moments_ps.png )
 
 * Nose-Hoover-Chain法も同様。
+
 ![nose_hoover_chain_ps.png](nose_hoover_chain_ps.png)
 
 ## 参考文献

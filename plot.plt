@@ -18,16 +18,15 @@ set ytics 1.0
 
 set style data points
 set size square
-unset key
 
 set out "nose_hoover_ps.png"
-p "nose_hoover_ps.dat" u 2:3
+p "nose_hoover_ps.dat" u 2:3 t "NH"
 
 set out "langevin_ps.png"
-p "langevin_ps.dat" u 2:3
+p "langevin_ps.dat" u 2:3 t "Langevin"
 
 set out "kinetic_moments_ps.png"
-p "kinetic_moments_ps.dat" u 2:3
+p "kinetic_moments_ps.dat" u 2:3 t "KM"
 
 set out "nose_hoover_chain_ps.png"
-p "nose_hoover_chain_ps.dat" u 2:3
+p "nose_hoover_chain_ps.dat" u 2:3 t "NHC"
