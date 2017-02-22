@@ -10,7 +10,7 @@
 const int LOOP = 10000000;
 const int O_LOOP = 1000;
 const double dt = 0.001;
-const double Q = 1.0;
+const double Q = 2.0;
 const double T = 1.0;
 //------------------------------------------------------------------------
 struct Vars {
@@ -42,9 +42,9 @@ class NoseHoover {
 public:
   Vars operator()(Vars v) {
     Vars dv;
-    dv.p = -v.q - v.p * v.zeta;
+    dv.p = -v.q - v.p * v.zeta/ Q;
     dv.q = v.p;
-    dv.zeta = (v.p * v.p - T) / Q;
+    dv.zeta = v.p * v.p - T;
     dv.eta = T * v.zeta;
     return dv;
   }
@@ -54,10 +54,10 @@ class KineticMoments {
 public:
   Vars operator()(Vars v) {
     Vars dv;
-    dv.p = -v.q - v.p * v.zeta - v.p * v.p * v.p * v.eta;
+    dv.p = -v.q - v.p * v.zeta/Q - v.p * v.p * v.p * v.eta/Q;
     dv.q = v.p;
-    dv.zeta = (v.p * v.p - T) / Q;
-    dv.eta = (v.p * v.p * v.p * v.p - 3.0 * T * v.p * v.p) / Q;
+    dv.zeta = v.p * v.p - T;
+    dv.eta = v.p * v.p * v.p * v.p - 3.0 * T * v.p * v.p;
     return dv;
   }
 };
@@ -66,10 +66,10 @@ class NoseHooverChain {
 public:
   Vars operator()(Vars v) {
     Vars dv;
-    dv.p = -v.q - v.p * v.zeta;
+    dv.p = -v.q - v.p * v.zeta/Q;
     dv.q = v.p;
-    dv.zeta = (v.p * v.p - T) / Q - v.eta * v.zeta;
-    dv.eta = (v.zeta * v.zeta - T) / Q;
+    dv.zeta = v.p * v.p - T - v.eta * v.zeta/Q;
+    dv.eta = v.zeta * v.zeta - T*Q;
     return dv;
   }
 };
