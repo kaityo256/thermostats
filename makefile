@@ -7,4 +7,4 @@ $(TARGET): thermostats.cpp
 	$(CC) $(CPPFLAGS) $< -o $@
 
 clean:
-	rm -f $(TARGET) 
+	rm -f $(TARGET) *.dat *.png

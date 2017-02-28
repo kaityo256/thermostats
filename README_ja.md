@@ -38,7 +38,7 @@ $ gnuplot plot.plt
 
 * Npse-Hoover法の場合の位相空間。本来なら原点に近いほど密に、離れるほど疎に位相空間を埋め尽くさなければならないが、明らかにエネルギーに上限と下限がある。
 
-![nose_hoover_ps.png](nose_hoover_ps.png)
+![nh_rk_ps.png](nh_rk_ps.png)
 
 * Langevin法の場合。原点に近いほど密に、離れるほど疎に位相空間を埋め尽くしており、正しく温度が制御されていることがわかる。
 
@@ -46,11 +46,11 @@ $ gnuplot plot.plt
 
 * Kinetic-Moments法も同様。
 
-![kinetic_moments_ps.png ](kinetic_moments_ps.png )
+![km_rk_ps.png ](km_rk_ps.png )
 
 * Nose-Hoover-Chain法も同様。
 
-![nose_hoover_chain_ps.png](nose_hoover_chain_ps.png)
+![nhc_rk_ps.png](nhc_rk_ps.png)
 
 ## 参考文献
 

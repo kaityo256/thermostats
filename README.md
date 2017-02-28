@@ -34,7 +34,7 @@ You can see that the system with Nose-Hoover doses not achieve the canonical dis
 
 * Phase Space of the Nose-Hoover method
 
-![nose_hoover_ps.png](nose_hoover_ps.png)
+![nh_rk_ps.png](nh_rk_ps.png)
 
 * Phase Space of the Langevin method
 
@@ -42,11 +42,11 @@ You can see that the system with Nose-Hoover doses not achieve the canonical dis
 
 * Phase space of the Kinetic-Moments method
 
-![kinetic_moments_ps.png ](kinetic_moments_ps.png )
+![km_rk_ps.png ](km_rk_ps.png )
 
 * Phase space of the Nose-Hoover-Chain method.
 
-![nose_hoover_chain_ps.png](nose_hoover_chain_ps.png)
+![nhc_rk_ps.png](nhc_rk_ps.png)
 
 ## References
 

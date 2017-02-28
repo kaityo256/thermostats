@@ -10,7 +10,6 @@
 const int LOOP = 10000000;
 const int O_LOOP = 1000;
 const double dt = 0.001;
-const double Q = 2.0;
 const double T = 1.0;
 //------------------------------------------------------------------------
 struct Vars {
@@ -18,59 +17,108 @@ struct Vars {
   double q;
   double zeta;
   double eta;
-  Vars (double _p, double _q, double _zeta, double _eta) {
+  double theta;
+  Vars (double _p, double _q, double _zeta, double _eta, double _theta) {
     p = _p;
     q = _q;
     zeta = _zeta;
     eta = _eta;
+    theta = _theta;
   }
   Vars () {
     p = 0.0;
     q = 0.0;
     zeta = 0.0;
     eta = 0.0;
+    theta = 0.0;
   }
   Vars operator+(const Vars &v) {
-    return Vars(p + v.p, q + v.q, zeta + v.zeta, eta + v.eta);
+    return Vars(p + v.p, q + v.q, zeta + v.zeta, eta + v.eta, theta + v.theta);
   }
   Vars operator*(const double f) {
-    return Vars(p * f, q * f, zeta * f, eta * f);
+    return Vars(p * f, q * f, zeta * f, eta * f, theta * f);
   }
 };
 //------------------------------------------------------------------------
 class NoseHoover {
+private:
+  double Q;
 public:
+  NoseHoover() {
+    Q = 4.0;
+  }
   Vars operator()(Vars v) {
     Vars dv;
-    dv.p = -v.q - v.p * v.zeta/ Q;
+    dv.p = -v.q - v.p * v.zeta / Q;
     dv.q = v.p;
     dv.zeta = v.p * v.p - T;
-    dv.eta = T * v.zeta;
+    dv.eta = v.zeta * T / Q;
     return dv;
+  }
+  double H(Vars v) {
+    double e = 0;
+    e += (v.p * v.p * 0.5);
+    e += (v.q * v.q * 0.5);
+    e += (v.zeta * v.zeta * 0.5 / Q);
+    e += v.eta;
+    return e;
   }
 };
 //------------------------------------------------------------------------
 class KineticMoments {
+private:
+  double Qzeta, Qeta;
 public:
+  KineticMoments() {
+    Qzeta = 4.0;
+    Qeta = 6.0;
+  }
   Vars operator()(Vars v) {
     Vars dv;
-    dv.p = -v.q - v.p * v.zeta/Q - v.p * v.p * v.p * v.eta/Q;
+    dv.p = -v.q - v.p * v.zeta / Qzeta - v.p * v.p * v.p * v.eta / Qeta;
     dv.q = v.p;
     dv.zeta = v.p * v.p - T;
     dv.eta = v.p * v.p * v.p * v.p - 3.0 * T * v.p * v.p;
+    dv.theta = v.zeta * T / Qzeta + 3.0 * T * v.p * v.p * v.eta / Qeta;
     return dv;
+  }
+  double H(Vars v) {
+    double e = 0;
+    e += (v.p * v.p * 0.5);
+    e += (v.q * v.q * 0.5);
+    e += (v.zeta * v.zeta * 0.5 / Qzeta);
+    e += (v.eta * v.eta * 0.5 / Qeta);
+    e += v.theta;
+    return e;
   }
 };
 //------------------------------------------------------------------------
 class NoseHooverChain {
+private:
+  double Qzeta;
+  double Qeta;
 public:
+  NoseHooverChain() {
+    Qzeta = 2.0;
+    Qeta = 5.0;
+  }
   Vars operator()(Vars v) {
     Vars dv;
-    dv.p = -v.q - v.p * v.zeta/Q;
+    dv.p = -v.q - v.p * v.zeta / Qzeta;
     dv.q = v.p;
-    dv.zeta = v.p * v.p - T - v.eta * v.zeta/Q;
-    dv.eta = v.zeta * v.zeta - T*Q;
+    dv.zeta = v.p * v.p - T - v.eta * v.zeta / Qeta;
+    dv.eta = v.zeta * v.zeta / Qzeta - T;
+    dv.theta = T * (v.zeta / Qzeta + v.eta / Qeta);
     return dv;
+  }
+  double H(Vars v) {
+    double e = 0;
+    e += (v.p * v.p * 0.5);
+    e += (v.q * v.q * 0.5);
+    e += (v.zeta * v.zeta * 0.5 / Qzeta);
+    e += (v.eta * v.eta * 0.5 / Qeta);
+    e += v.theta;
+    return e;
   }
 };
 
@@ -89,8 +137,10 @@ public:
     dv.q = v.p;
     return dv;
   }
+  double H(Vars ) {
+    return 0.0;
+  }
 };
-
 //------------------------------------------------------------------------
 template <class DIFF>
 class RungeKutta {
@@ -108,6 +158,9 @@ public:
     v = v + (k1 + k2 * 2.0 + k3 * 2.0 + k4) * (dt / 6.0);
     return v;
   }
+  double H(Vars v) {
+    return diff.H(v);
+  }
 };
 //------------------------------------------------------------------------
 template <class DIFF>
@@ -121,11 +174,15 @@ public:
     v = v + diff(v) * dt;
     return v;
   }
+  double H(Vars v) {
+    return diff.H(v);
+  }
 };
 //------------------------------------------------------------------------
 template <class Method>
 void integrate(Method f, std::string name) {
-  Vars v(0.0, 1.0, 0.0, 0.0);
+  Vars v;
+  v.q = 1.0;
   double t = 0;
   std::string pfile = name + "_ps.dat";
   std::ofstream ofs_p(pfile.c_str());
@@ -137,7 +194,8 @@ void integrate(Method f, std::string name) {
     if (i % O_LOOP == 0) {
       ofs_p << t << " ";
       ofs_p << v.p << " ";
-      ofs_p << v.q << std::endl;
+      ofs_p << v.q << " ";
+      ofs_p << f.H(v) << std::endl;
       data_e.push_back(v.p * v.p * 0.5 + v.q * v.q * 0.5);
     }
   }
@@ -153,9 +211,15 @@ void integrate(Method f, std::string name) {
 //------------------------------------------------------------------------
 int
 main(void) {
-  integrate(RungeKutta<NoseHoover>(dt), "nose_hoover");
-  integrate(RungeKutta<KineticMoments>(dt), "kinetic_moments");
-  integrate(RungeKutta<NoseHooverChain>(dt), "nose_hoover_chain");
+  integrate(RungeKutta<NoseHoover>(dt), "nh_rk");
+  integrate(Euler<NoseHoover>(dt), "nh_euler");
+
+  integrate(RungeKutta<KineticMoments>(dt), "km_rk");
+  integrate(Euler<KineticMoments>(dt), "km_euler");
+
+  integrate(RungeKutta<NoseHooverChain>(dt), "nhc_rk");
+  integrate(Euler<NoseHooverChain>(dt), "nhc_euler");
+
   integrate(Euler<Langevin>(dt), "langevin");
 }
 //------------------------------------------------------------------------
